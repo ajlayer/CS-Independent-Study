@@ -50,6 +50,7 @@ def getNeighbors(trainingSet, testInstance, k):
     length = len(testInstance) - 1
     count += 1
     for x in range(len(trainingSet)):
+        #print(x)
         dist = euclideanDistance(testInstance, trainingSet[x], length)
         count += 1
         distances.append((trainingSet[x], dist))
@@ -72,7 +73,7 @@ def getResponse(neighbors):
     for x in range(len(neighbors)):
         response = neighbors[x][-1]
         count += 1
-	print(response)
+	#print(response)
         if response in classVotes:
             classVotes[response] += 1
             count += 1
@@ -103,14 +104,33 @@ def main(fileName):
     global count
     trainingSet = []
     trainingSet2 = []
+    trainingSet3 = []
     count += 1
     testSet = []
     testSet2 = []
+    testSet3 = []
     count += 1
     split = 0.67
     count += 1
-    loadDataset(fileName, split, trainingSet, testSet)
+    #loadDataset(fileName, split, trainingSet, testSet)
     count += 1
+
+    with open('test_set.csv', 'rb') as csvfile:
+        lines = csv.reader(csvfile)
+        dataset = list(lines)
+        for i in dataset:
+            testSet3.append(i)
+
+    with open('Training_set.csv','rb') as csvfile:
+        lines = csv.reader(csvfile)
+        dataset = list(lines)
+        for i in dataset:
+            trainingSet3.append(i)
+
+
+    #print(testSet3)
+    #print(trainingSet3)
+    #sys.exit(0)
     #print('Train set: ' + repr(len(trainingSet)))
     #print('Test set: ' + repr(len(testSet)))
     # generate predictions
@@ -118,31 +138,31 @@ def main(fileName):
     count += 1
     k = 3
     count += 1
-    for x in range(len(testSet)):
-        neighbors = getNeighbors(trainingSet, testSet[x], k)
+    for x in range(len(testSet3)):
+        neighbors = getNeighbors(trainingSet3, testSet3[x], k)
         count += 1
         result = getResponse(neighbors)
         count += 1
         predictions.append(result)
         count += 1
         # print('> predicted=' + repr(result) + ', actual=' + repr(testSet[x][-1]))
-    accuracy = getAccuracy(testSet, predictions)
+    accuracy = getAccuracy(testSet3, predictions)
     count += 1
     #print('Accuracy: ' + repr(accuracy) + '%')
     #print('Counts = ' + str(count))
-    print(repr(len(trainingSet)) + "," + repr(len(testSet)) + "," + repr(accuracy) + "," + str(count))
+    print(repr(len(trainingSet3)) + "," + repr(len(testSet3)) + "," + repr(accuracy) + "," + str(count))
 
     # User input is the first row of the .csv
-    inputFile = 'input.csv' 
-    loadDataset(inputFile, split, trainingSet2, testSet2)
+    #inputFile = 'input.csv' 
+    #loadDataset(inputFile, split, trainingSet2, testSet2)
     #print(trainingSet2)
     #sys.exit(0)
     userInput = [1, 60, 1, 65, 8450, 1, 0, 1, 1, 1, 208500, "200000-299999"]
 
-    uNeighbors = getNeighbors(trainingSet, userInput, k)
-    uResult = getResponse(uNeighbors)
-    print("Expected value - Close to 200000-299999")
-    print("User Input Prediction = " + uResult)
+    #uNeighbors = getNeighbors(trainingSet, userInput, k)
+    #uResult = getResponse(uNeighbors)
+    #print("Expected value - Close to 200000-299999")
+    #print("User Input Prediction = " + uResult)
     #print("User Input Actual = " + userInput[10])
 
 main('clean.csv')
